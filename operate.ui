@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Operate</class>
+ <widget class="QWidget" name="Operate">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>477</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QPushButton" name="pushButton_upload">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>230</y>
+     <width>101</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>上传试卷</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_download">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>230</y>
+     <width>91</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>查看试卷</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

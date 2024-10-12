@@ -1,6 +1,6 @@
 #include "operate.h"
 #include "ui_operate.h"
-#include "upload.h"
+// #include "upload.h"
 
 Operate::Operate(QWidget *parent) :
     QWidget(parent),
@@ -14,8 +14,14 @@ Operate::~Operate()
     delete ui;
 }
 
+Operate &Operate::getInstance()
+{
+    static Operate instance;
+    return instance;
+}
+
 void Operate::on_pushButton_upload_clicked()
 {
-    Upload u;
-    u.show();
+    upWidegt = new Upload;
+    upWidegt->show();
 }

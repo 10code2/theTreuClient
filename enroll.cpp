@@ -1,6 +1,7 @@
 #include "enroll.h"
 #include "ui_enroll.h"
 #include "Protocol.h"
+#include "operate.h"
 
 Enroll::Enroll(QWidget *parent)
     : QWidget(parent)
@@ -86,7 +87,8 @@ void Enroll::recvMsg()
             QMessageBox::information(this, "登录", "登录成功");
             this->hide();
             // 登录成功进入教师操作界面
-            // opeWidget::getInstance().show();
+            Operate::getInstance().show();
+            qDebug() << "打开操作界面";
         }
         else if(0 == strcmp(pdu->caData, ENROLL_FAILED))
         {

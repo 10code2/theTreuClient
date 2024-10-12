@@ -23,8 +23,7 @@ QImage Upload::convertToGrayscale(const QImage &image)
     return grayImage;
 }
 
-QImage Upload
-::getGray(int n)
+QImage Upload::getGray(int n)
 {
     switch (n) {
     case 0:{
@@ -43,11 +42,17 @@ QImage Upload
 
 void Upload::sendGray(QImage &image, QString fName)
 {
-    PDU *pdu = mkPDU(sizeof(image) + 1);
+    QByteArray receBuffer; //创建接收字节流
+    QBuffer bufferDevice(&receBuffer);//
+    bufferDevice.open(QIODevice::WriteOnly);//打开缓冲区，写入字节流
+    image.save(&bufferDevice,"png");//图像保存为指定类别
+
+    qDebug() << "文件："<< fName << "，大小：" << receBuffer.size();
+    PDU *pdu = mkPDU(receBuffer.size() + 1);  // 这里假设image不大于4k
     pdu->uiMsgType = MSG_TYPE_SEND_FILE_REQUEST;
 
     strcpy(pdu->caData, fName.toStdString().c_str());
-    memcpy(pdu->caMsg, (char*)(&image), sizeof(image));
+    memcpy(pdu->caMsg, receBuffer, receBuffer.size());
 
     Enroll::getInstance().getTcpSocket()->write((char*)pdu, pdu->uiPDULen);
     free(pdu);
@@ -63,6 +68,7 @@ void Upload::on_pushButton_chose_clicked()
     }
     else{
         choseGray = convertToGrayscale(imge);
+        qDebug() << choseGray.size() << "|||" << sizeof(choseGray);
         ui->label_3->setPixmap(QPixmap::fromImage(choseGray));
     }
 }
@@ -117,13 +123,14 @@ void Upload::on_pushButton_ok_clicked()
 
 void Upload::sendExam()
 {
+    qDebug() << "开始传输图片";
     QString ID = ui->lineEdit_ID->text();
     QString name = ui->lineEdit_name->text();
-    QString pre = QString("exam/%1/%2").arg(ID).arg(name);  // 路径前缀
+    QString pre = QString("exam/%1%2").arg(ID).arg(name);  // 路径前缀
     QList<QImage> lis({choseGray, fillGray, judgmentGray});
 
     for(int i = 0; i < 3; i ++){ // 假设每个题目只有一张照片，且可以一次传输完
-        QString path = pre + QString::number(i);
+        QString path = pre + QString::number(i) + ".png";
         sendGray(lis[i], path);
     }
 }

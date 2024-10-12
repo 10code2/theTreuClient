@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include"upload.h"
+
 namespace Ui {
 class Operate;
 }
@@ -12,14 +14,17 @@ class Operate : public QWidget
     Q_OBJECT
 
 public:
-    explicit Operate(QWidget *parent = nullptr);
     ~Operate();
+    static Operate &getInstance();
 
 private slots:
     void on_pushButton_upload_clicked();
 
 private:
+    explicit Operate(QWidget *parent = nullptr);
+
     Ui::Operate *ui;
+    Upload *upWidegt;
 };
 
 #endif // OPERATE_H

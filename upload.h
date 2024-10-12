@@ -8,6 +8,8 @@
 #include <QImage>
 #include <QPixmap>
 #include <QList>
+#include <QBuffer>
+
 
 namespace Ui {
 class Upload;

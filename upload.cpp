@@ -17,28 +17,16 @@ Upload::~Upload()
     delete ui;
 }
 
-QImage Upload::convertToGrayscale(const QImage &image)
+QImage Upload::convertToBinary(const QImage &image) // 将图片转化为二值图片
 {
-    QImage grayImage = image.convertToFormat(QImage::Format_Grayscale8);
-    return grayImage;
+    QImage scaledImage = image.scaled(448, 448, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QImage grayImage = scaledImage.convertToFormat(QImage::Format_Grayscale8);
+    QImage binaryImage = grayImage.convertToFormat(QImage::Format_Mono);
+    return binaryImage;
 }
 
-QImage Upload::getGray(int n)
-{
-    switch (n) {
-    case 0:{
-        return choseGray;
-    }
-    case 1:{
-        return fillGray;
-    }
-    case 2:{
-        return judgmentGray;
-    }
-    default: // 暂时没想好该返回什么。
-        return choseGray;
-    }
-}
+
+
 
 void Upload::sendGray(QImage &image, QString fName)
 {
@@ -62,12 +50,12 @@ void Upload::sendGray(QImage &image, QString fName)
 void Upload::on_pushButton_chose_clicked()
 {
     QString chosePath = QFileDialog::getOpenFileName(this, tr("Open image"), QDir::homePath(), tr("(*.jpg)\n(*.bmp)\n(*.png)"));
-    QImage imge = QImage(chosePath);
-    if(imge.isNull()){
+    QImage image = QImage(chosePath);
+    if(image.isNull()){
         QMessageBox::warning(this, "打开图片", "打开图片失败");
     }
     else{
-        choseGray = convertToGrayscale(imge);
+        choseGray = convertToBinary(image);
         qDebug() << choseGray.size() << "|||" << sizeof(choseGray);
         ui->label_3->setPixmap(QPixmap::fromImage(choseGray));
     }
@@ -81,7 +69,7 @@ void Upload::on_pushButton_fill_clicked()
         QMessageBox::warning(this, "打开图片", "打开图片失败");
     }
     else{
-        fillGray = convertToGrayscale(imge);
+        fillGray = convertToBinary(imge);
         ui->label_4->setPixmap(QPixmap::fromImage(fillGray));
     }
 }
@@ -94,13 +82,14 @@ void Upload::on_pushButton_judgment_clicked()
         QMessageBox::warning(this, "打开图片", "打开图片失败");
     }
     else{
-        judgmentGray = convertToGrayscale(imge);
+        judgmentGray = convertToBinary(imge);
         ui->label_5->setPixmap(QPixmap::fromImage(judgmentGray));
     }
 }
 
 void Upload::on_pushButton_ok_clicked()
 {
+    count = 0;
     QString ID = ui->lineEdit_ID->text();
     QString name = ui->lineEdit_name->text();
     if(ID.isEmpty() || name.isEmpty()){
@@ -123,14 +112,14 @@ void Upload::on_pushButton_ok_clicked()
 
 void Upload::sendExam()
 {
+    if(count > 2) return;  // 因为只上传三次
     qDebug() << "开始传输图片";
     QString ID = ui->lineEdit_ID->text();
     QString name = ui->lineEdit_name->text();
-    QString pre = QString("exam/%1%2").arg(ID).arg(name);  // 路径前缀
+    QString pre = QString("exam/%1-%2-").arg(ID).arg(name);  // 路径前缀
     QList<QImage> lis({choseGray, fillGray, judgmentGray});
 
-    for(int i = 0; i < 3; i ++){ // 假设每个题目只有一张照片，且可以一次传输完
-        QString path = pre + QString::number(i) + ".png";
-        sendGray(lis[i], path);
-    }
+    QString path = pre + QString::number(count) + ".png";
+    sendGray(lis[count], path);
+    count ++;
 }

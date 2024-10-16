@@ -23,8 +23,8 @@ public:
     explicit Upload(QWidget *parent = nullptr);
     ~Upload();
 
-    QImage convertToGrayscale(const QImage &image);
-    QImage getGray(int n);
+    QImage convertToBinary(const QImage &image);
+
     void sendGray(QImage &image, QString fName);
 
 private slots:
@@ -42,6 +42,7 @@ private:
     Ui::Upload *ui;
 
     QImage choseGray, fillGray, judgmentGray;
+    int count;
 };
 
 #endif // UPLOAD_H

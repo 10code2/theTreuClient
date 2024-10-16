@@ -78,7 +78,7 @@ void Enroll::recvMsg()
     switch (pdu->uiMsgType) {
     case MSG_TYPE_ORDINARY_RESPOND:
     {
-        QMessageBox::information(this, "提示", pdu->caData);
+        QMessageBox::information(this, "提示" , pdu->caData);
     }
     case MSG_TYPE_ENROLL_RESPOND:
     {
@@ -112,7 +112,7 @@ void Enroll::on_pushButton_register_clicked()
     QString name = ui->lineEdit_name->text();
     QString pwd = ui->lineEdit_pwd->text();
 
-    if(!name.isEmpty() && pwd.size() > 5)
+    if(!name.isEmpty() && !pwd.isEmpty())
     {
         PDU* pdu = mkPDU(0);
         pdu->uiMsgType = MSG_TYPE_REGIST_REQUEST;
@@ -133,7 +133,7 @@ void Enroll::on_pushButton_enroll_clicked()
     QString name = ui->lineEdit_name->text();
     QString pwd = ui->lineEdit_pwd->text();
 
-    if(!name.isEmpty() && pwd.size() > 5)
+    if(!name.isEmpty() && !pwd.isEmpty())
     {
         PDU* pdu = mkPDU(0);
         pdu->uiMsgType = MSG_TYPE_ENROLL_REQUEST;
